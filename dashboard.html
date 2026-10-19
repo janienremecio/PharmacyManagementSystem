@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaTrack - Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #F9FCFB;
+            color: #1F2937;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        header {
+            background: #006D5B;
+            color: white;
+            padding: 18px 5%;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: #10B981;
+            color: white;
+        }
+
+        /* Logout Button */
+        nav a.logout-btn {
+            background: #FFFFFF;
+            color: #006D5B;
+            border: 1px solid #E2E8F0;
+            font-weight: bold;
+        }
+
+        nav a.logout-btn:hover {
+            background: #E6F7F3;
+            color: #006D5B;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 5%;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: #006D5B;
+        }
+
+        .welcome p {
+            color: #6B7280;
+            line-height: 1.6;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .dashboard-card {
+            display: block;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 28px;
+            text-decoration: none;
+            color: #1F2937;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 18px rgba(0, 109, 91, 0.10);
+            border-color: #10B981;
+        }
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            background: #E6F7F3;
+            color: #006D5B;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            font-size: 26px;
+            margin-bottom: 18px;
+        }
+
+        .dashboard-card h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-card p {
+            color: #6B7280;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .card-link {
+            display: inline-block;
+            margin-top: 18px;
+            color: #006D5B;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px 15px;
+            color: #6B7280;
+            font-size: 13px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 650px) {
+            header {
+                padding: 18px 5%;
+            }
+
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav {
+                width: 100%;
+                gap: 8px;
+            }
+
+            nav a {
+                padding: 9px 10px;
+            }
+
+            main {
+                padding-top: 30px;
+            }
+
+            .welcome h1 {
+                font-size: 25px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-card {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="navbar">
+            <div class="logo">PharmaTrack</div>
+
+            <nav>
+                <a href="dashboard.html" class="active">Dashboard</a>
+                <a href="index.html" class="logout-btn" id="logoutBtn">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="welcome">
+            <h1>Dashboard</h1>
+            <p>
+                Welcome to PharmaTrack! Manage medicines, monitor stock,
+                record customer purchases, and track pharmacy sales.
+            </p>
+        </section>
+
+        <section class="dashboard-grid">
+
+            <a href="medicines.html" class="dashboard-card">
+                <div class="card-icon">💊</div>
+                <h2>Manage Medicines</h2>
+                <p>
+                    Manage medicine details, prices, stock, and expiration dates.
+                </p>
+                <span class="card-link">Manage Medicines →</span>
+            </a>
+
+            <a href="purchases.html" class="dashboard-card">
+                <div class="card-icon">🛒</div>
+                <h2>Customer Purchases</h2>
+                <p>
+                    Record medicine sales and calculate purchase totals.
+                </p>
+                <span class="card-link">Record Purchase →</span>
+            </a>
+
+            <a href="total-cost.html" class="dashboard-card">
+                <div class="card-icon">📊</div>
+                <h2>Total Sales</h2>
+                <p>
+                    View monthly sales totals and transactions.
+                </p>
+                <span class="card-link">View Sales →</span>
+            </a>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 PharmaTrack | Pharmacy Management System</p>
+    </footer>
+
+    <script>
+        const logoutButton = document.getElementById("logoutBtn");
+
+        logoutButton.addEventListener("click", function(event) {
+            const confirmLogout = confirm(
+                "Are you sure you want to log out?"
+            );
+
+            if (!confirmLogout) {
+                event.preventDefault();
+            }
+        });
+    </script>
+
+</body>
+</html>

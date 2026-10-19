@@ -1,0 +1,1245 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaTrack - Customer Purchases</title>
+
+    <style>
+        :root {
+            --primary: #006D5B;
+            --green: #10B981;
+            --mint: #E6F7F3;
+            --background: #F9FCFB;
+            --text: #1F2937;
+            --muted: #6B7280;
+            --border: #E2E8F0;
+            --white: #FFFFFF;
+            --danger: #DC2626;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        .topbar {
+            background: var(--primary);
+            color: var(--white);
+            min-height: 56px;
+            padding: 16px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand { font-size: 21px; font-weight: bold; }
+
+        .back-link {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        main {
+            width: 92%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .page-heading { margin-bottom: 25px; }
+
+        .page-heading h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .panel {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(31, 41, 55, 0.04);
+        }
+
+        .panel h2 { font-size: 20px; margin: 0 0 20px; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .form-group.full { grid-column: 1 / -1; }
+
+        label { font-size: 14px; font-weight: bold; }
+
+        input, select {
+            width: 100%;
+            min-width: 0;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            font: inherit;
+            font-size: 14px;
+            background: var(--white);
+            color: var(--text);
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid var(--mint);
+            border-color: var(--primary);
+        }
+
+        input[readonly] { background: #F3F4F6; }
+
+        button {
+            border: none;
+            border-radius: 7px;
+            padding: 12px 17px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-primary { background: var(--primary); color: var(--white); }
+
+        .btn-primary:hover:not(:disabled) { background: #005447; }
+
+        .btn-secondary { background: var(--mint); color: var(--primary); }
+
+        .btn-danger { background: #FEE2E2; color: var(--danger); }
+
+        .btn-edit {
+            background: var(--mint);
+            color: var(--primary);
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .table-wrap { width: 100%; overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th, td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #F3F8F6;
+            color: var(--text);
+            font-weight: bold;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            margin-top: 15px;
+        }
+
+        .total-row strong { font-size: 14px; }
+
+        .total-amount {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .history-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 18px;
+            overflow: hidden;
+        }
+
+        .history-header {
+            background: #F3F8F6;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .history-header h3 { margin: 0 0 5px; font-size: 16px; }
+
+        .history-date { font-size: 13px; color: var(--muted); }
+
+        .history-body { padding: 16px; }
+
+        .history-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .history-total strong:last-child {
+            color: var(--primary);
+            font-size: 19px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 28px 15px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .notice {
+            display: none;
+            padding: 13px 15px;
+            margin-bottom: 18px;
+            border-radius: 7px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .notice.success { display: block; color: #166534; background: #DCFCE7; }
+        .notice.error { display: block; color: #991B1B; background: #FEE2E2; }
+        .notice.info { display: block; color: #1D4ED8; background: #DBEAFE; }
+
+        .muted { color: var(--muted); font-size: 13px; }
+
+        .history-filter {
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 18px;
+        }
+
+        .edit-input {
+            min-width: 110px;
+            padding: 9px;
+            margin: 2px 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .action-buttons button {
+            padding: 9px 11px;
+        }
+
+        @media (max-width: 700px) {
+            .topbar { flex-wrap: wrap; }
+            .brand { font-size: 20px; }
+            .back-link { font-size: 13px; }
+            main { width: 94%; margin: 22px auto; }
+            .page-heading h1 { font-size: 24px; }
+            .panel { padding: 17px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full { grid-column: auto; }
+            .button-row button { width: 100%; }
+            .total-amount { font-size: 23px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="brand">PharmaTrack</div>
+    <a class="back-link" href="dashboard.html">← Back to Dashboard</a>
+</header>
+
+<main>
+    <div class="page-heading">
+        <h1>Customer Purchases</h1>
+        <p>Record medicine purchases, calculate costs, and view purchase history.</p>
+    </div>
+
+    <div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+    <section class="panel">
+        <h2>New Purchase</h2>
+
+        <div class="form-grid">
+            <div class="form-group full">
+                <label for="medicineSelect">Select Medicine</label>
+                <select id="medicineSelect">
+                    <option value="">Select a medicine</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <input type="text" id="category" readonly placeholder="Auto-filled">
+            </div>
+
+            <div class="form-group">
+                <label for="medicineForm">Medicine Form</label>
+                <input type="text" id="medicineForm" readonly placeholder="Auto-filled">
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price per Unit (₱)</label>
+                <input type="text" id="price" readonly placeholder="Auto-filled">
+            </div>
+
+            <div class="form-group">
+                <label for="stock">Available Stock</label>
+                <input type="text" id="stock" readonly placeholder="Auto-filled">
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">Quantity to Purchase</label>
+                <input type="number" id="quantity" min="1" step="1"
+                       placeholder="Enter quantity">
+            </div>
+
+            <div class="form-group">
+                <label for="subtotal">Subtotal (₱)</label>
+                <input type="text" id="subtotal" readonly value="₱0.00">
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button type="button" class="btn-primary" id="addButton">
+                Add to Purchase List
+            </button>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Current Purchase</h2>
+        <p class="muted">
+            Use Edit to change the product or purchase details. Remove deletes
+            the selected medicine from this current transaction.
+        </p>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Price Each</th>
+                        <th>Subtotal</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="cartBody"></tbody>
+            </table>
+        </div>
+
+        <div id="cartEmpty" class="empty-state">
+            No medicines added yet.
+        </div>
+
+        <div class="total-row">
+            <strong>Total Cost</strong>
+            <span class="total-amount" id="cartTotal">₱0.00</span>
+        </div>
+
+        <div class="button-row">
+            <button type="button" class="btn-primary" id="saveButton" disabled>
+                Save Purchase
+            </button>
+            <button type="button" class="btn-secondary" id="clearButton">
+                Clear Current Purchase
+            </button>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Purchase History</h2>
+        <p class="muted">
+            Each saved purchase is kept separately. Starting another purchase
+            will not add its items to a previous transaction.
+        </p>
+
+        <input type="date" id="historyDate" class="history-filter"
+               aria-label="Filter purchase history by date">
+
+        <div id="historyList"></div>
+    </section>
+</main>
+
+<script>
+    const MEDICINES_KEY = "pharmaTrackMedicines";
+    const PURCHASES_KEY = "pharmaTrackPurchases";
+
+    let cart = [];
+    let editingIndex = null;
+
+    const medicineSelect = document.getElementById("medicineSelect");
+    const categoryInput = document.getElementById("category");
+    const formInput = document.getElementById("medicineForm");
+    const priceInput = document.getElementById("price");
+    const stockInput = document.getElementById("stock");
+    const quantityInput = document.getElementById("quantity");
+    const subtotalInput = document.getElementById("subtotal");
+
+    const cartBody = document.getElementById("cartBody");
+    const cartEmpty = document.getElementById("cartEmpty");
+    const cartTotal = document.getElementById("cartTotal");
+    const saveButton = document.getElementById("saveButton");
+    const notice = document.getElementById("notice");
+
+    function money(amount) {
+        return Number(amount).toLocaleString("en-PH", {
+            style: "currency",
+            currency: "PHP",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function getMedicines() {
+        try {
+            const data = JSON.parse(
+                localStorage.getItem(MEDICINES_KEY) || "[]"
+            );
+            return Array.isArray(data) ? data : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function getPurchases() {
+        try {
+            const data = JSON.parse(
+                localStorage.getItem(PURCHASES_KEY) || "[]"
+            );
+            return Array.isArray(data) ? data : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function showNotice(message, type = "info") {
+        notice.textContent = message;
+        notice.className = "notice " + type;
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function hideNotice() {
+        notice.textContent = "";
+        notice.className = "notice";
+    }
+
+    function getUnit(medicine) {
+        return medicine.stockUnit || medicine.unit || "Pieces";
+    }
+
+    function getAvailableMedicines() {
+        return getMedicines().filter(medicine =>
+            medicine &&
+            medicine.id !== undefined &&
+            medicine.id !== null &&
+            medicine.name
+        );
+    }
+
+    function findMedicine(id) {
+        return getMedicines().find(medicine =>
+            String(medicine.id) === String(id)
+        );
+    }
+
+    function refreshMedicineOptions() {
+        const currentId = medicineSelect.value;
+        const medicines = getAvailableMedicines();
+
+        medicineSelect.innerHTML =
+            '<option value="">Select a medicine</option>';
+
+        medicines.forEach(medicine => {
+            const option = document.createElement("option");
+            option.value = medicine.id;
+            option.textContent =
+                medicine.name + " (" + getUnit(medicine) +
+                " — Stock: " + (Number(medicine.stock) || 0) + ")";
+            medicineSelect.appendChild(option);
+        });
+
+        if (medicines.some(m => String(m.id) === currentId)) {
+            medicineSelect.value = currentId;
+        }
+
+        updateMedicineDetails();
+    }
+
+    function updateMedicineDetails() {
+        const medicine = findMedicine(medicineSelect.value);
+
+        if (!medicine) {
+            categoryInput.value = "";
+            formInput.value = "";
+            priceInput.value = "";
+            stockInput.value = "";
+            subtotalInput.value = money(0);
+            return;
+        }
+
+        categoryInput.value = medicine.category || "";
+        formInput.value = medicine.form || "";
+        priceInput.value = money(Number(medicine.price) || 0);
+        stockInput.value =
+            (Number(medicine.stock) || 0) + " " + getUnit(medicine);
+
+        updateSubtotal();
+    }
+
+    function updateSubtotal() {
+        const medicine = findMedicine(medicineSelect.value);
+        const quantity = Number(quantityInput.value);
+
+        if (!medicine || !Number.isInteger(quantity) || quantity < 1) {
+            subtotalInput.value = money(0);
+            return;
+        }
+
+        subtotalInput.value = money(
+            (Number(medicine.price) || 0) * quantity
+        );
+    }
+
+    function addToCart() {
+        hideNotice();
+
+        if (editingIndex !== null) {
+            showNotice(
+                "Please save or cancel the current edit first.",
+                "error"
+            );
+            return;
+        }
+
+        const medicine = findMedicine(medicineSelect.value);
+        const quantity = Number(quantityInput.value);
+
+        if (!medicine) {
+            showNotice("Please select a medicine.", "error");
+            return;
+        }
+
+        if (!Number.isInteger(quantity) || quantity < 1) {
+            showNotice(
+                "Please enter a valid whole-number quantity.",
+                "error"
+            );
+            return;
+        }
+
+        const currentStock = Number(medicine.stock);
+
+        if (!Number.isFinite(currentStock) || currentStock < 0) {
+            showNotice("The stock record is invalid.", "error");
+            return;
+        }
+
+        const existingItem = cart.find(item =>
+            String(item.medicineId) === String(medicine.id)
+        );
+
+        const alreadyAdded = existingItem ? existingItem.quantity : 0;
+
+        if (alreadyAdded + quantity > currentStock) {
+            showNotice(
+                "Not enough stock available for " + medicine.name + ".",
+                "error"
+            );
+            return;
+        }
+
+        const price = Number(medicine.price);
+
+        if (!Number.isFinite(price) || price < 0) {
+            showNotice("The medicine price is invalid.", "error");
+            return;
+        }
+
+        if (existingItem) {
+            existingItem.quantity += quantity;
+            existingItem.subtotal =
+                existingItem.price * existingItem.quantity;
+        } else {
+            cart.push({
+                medicineId: medicine.id,
+                name: medicine.name,
+                category: medicine.category || "",
+                form: medicine.form || "",
+                stockUnit: getUnit(medicine),
+                price: price,
+                quantity: quantity,
+                subtotal: price * quantity
+            });
+        }
+
+        renderCart();
+        quantityInput.value = "";
+        subtotalInput.value = money(0);
+
+        showNotice("Medicine added to the current purchase list.", "success");
+    }
+
+    // EDIT: show editable fields for the selected cart item.
+    function editCartItem(index) {
+        hideNotice();
+        editingIndex = index;
+        renderCart();
+    }
+
+    function saveCartItemEdit(index) {
+        hideNotice();
+
+        const row = cartBody.querySelector(
+            'tr[data-index="' + index + '"]'
+        );
+
+        if (!row) return;
+
+        const productSelect = row.querySelector(".edit-product");
+        const quantityField = row.querySelector(".edit-quantity");
+        const priceField = row.querySelector(".edit-price");
+
+        const medicine = findMedicine(productSelect.value);
+        const quantity = Number(quantityField.value);
+        const price = Number(priceField.value);
+
+        if (!medicine) {
+            showNotice("Please select a valid medicine.", "error");
+            return;
+        }
+
+        if (!Number.isInteger(quantity) || quantity < 1) {
+            showNotice("Quantity must be a whole number greater than zero.", "error");
+            return;
+        }
+
+        if (!Number.isFinite(price) || price < 0) {
+            showNotice("Please enter a valid price.", "error");
+            return;
+        }
+
+        const currentStock = Number(medicine.stock) || 0;
+
+        // Account for this item's old quantity if the medicine stays the same.
+        const oldItem = cart[index];
+        const sameMedicine =
+            String(oldItem.medicineId) === String(medicine.id);
+
+        const otherQuantity = cart.reduce((sum, item, itemIndex) => {
+            if (itemIndex === index &&
+                String(item.medicineId) === String(medicine.id)) {
+                return sum;
+            }
+
+            if (String(item.medicineId) === String(medicine.id)) {
+                return sum + item.quantity;
+            }
+
+            return sum;
+        }, 0);
+
+        if (quantity + otherQuantity > currentStock) {
+            showNotice(
+                "The requested quantity exceeds the available stock.",
+                "error"
+            );
+            return;
+        }
+
+        const duplicateIndex = cart.findIndex((item, itemIndex) =>
+            itemIndex !== index &&
+            String(item.medicineId) === String(medicine.id)
+        );
+
+        if (duplicateIndex !== -1) {
+            const combinedQuantity = cart[duplicateIndex].quantity + quantity;
+
+            if (combinedQuantity > currentStock) {
+                showNotice(
+                    "The combined quantity exceeds available stock.",
+                    "error"
+                );
+                return;
+            }
+
+            // Merge rows if the edited product already exists in the cart.
+            cart[duplicateIndex].quantity = combinedQuantity;
+            cart[duplicateIndex].price = price;
+            cart[duplicateIndex].subtotal = price * combinedQuantity;
+            cart.splice(index, 1);
+        } else {
+            cart[index] = {
+                medicineId: medicine.id,
+                name: medicine.name,
+                category: medicine.category || "",
+                form: medicine.form || "",
+                stockUnit: getUnit(medicine),
+                price: price,
+                quantity: quantity,
+                subtotal: price * quantity
+            };
+        }
+
+        editingIndex = null;
+        renderCart();
+        showNotice("Purchase item updated successfully.", "success");
+    }
+
+    function cancelCartItemEdit() {
+        editingIndex = null;
+        renderCart();
+        hideNotice();
+    }
+
+    // REMOVE: only removes an item from the current transaction.
+    function removeCartItem(index) {
+        const item = cart[index];
+        if (!item) return;
+
+        const confirmed = confirm(
+            'Remove "' + item.name + '" from the current purchase?'
+        );
+
+        if (!confirmed) return;
+
+        cart.splice(index, 1);
+        editingIndex = null;
+        renderCart();
+        showNotice("Medicine removed from the current purchase.", "success");
+    }
+
+    function renderCart() {
+        cartBody.innerHTML = "";
+
+        cart.forEach((item, index) => {
+            const row = document.createElement("tr");
+            row.dataset.index = index;
+
+            if (editingIndex === index) {
+                // Medicine dropdown
+                const medicineCell = document.createElement("td");
+                const productSelect = document.createElement("select");
+                productSelect.className = "edit-input edit-product";
+
+                getAvailableMedicines().forEach(medicine => {
+                    const option = document.createElement("option");
+                    option.value = medicine.id;
+                    option.textContent = medicine.name;
+                    productSelect.appendChild(option);
+                });
+
+                productSelect.value = item.medicineId;
+
+                medicineCell.appendChild(productSelect);
+                row.appendChild(medicineCell);
+
+                // Category (auto-filled from the selected medicine)
+                const categoryCell = document.createElement("td");
+                categoryCell.className = "edit-category";
+                categoryCell.textContent = item.category || "-";
+                row.appendChild(categoryCell);
+
+                // Quantity
+                const quantityCell = document.createElement("td");
+                const quantityField = document.createElement("input");
+                quantityField.type = "number";
+                quantityField.min = "1";
+                quantityField.step = "1";
+                quantityField.value = item.quantity;
+                quantityField.className = "edit-input edit-quantity";
+                quantityCell.appendChild(quantityField);
+                row.appendChild(quantityCell);
+
+                // Editable price
+                const priceCell = document.createElement("td");
+                const priceField = document.createElement("input");
+                priceField.type = "number";
+                priceField.min = "0";
+                priceField.step = "0.01";
+                priceField.value = item.price;
+                priceField.className = "edit-input edit-price";
+                priceCell.appendChild(priceField);
+                row.appendChild(priceCell);
+
+                // Subtotal preview
+                const subtotalCell = document.createElement("td");
+                subtotalCell.className = "edit-subtotal";
+                subtotalCell.textContent =
+                    money(item.price * item.quantity);
+                row.appendChild(subtotalCell);
+
+                function updateEditPreview() {
+                    const selectedMedicine = findMedicine(productSelect.value);
+
+                    if (selectedMedicine) {
+                        categoryCell.textContent =
+                            selectedMedicine.category || "-";
+
+                        // Selecting a different product fills its current price.
+                        if (productSelect.dataset.changed === "yes") {
+                            priceField.value =
+                                Number(selectedMedicine.price) || 0;
+                            productSelect.dataset.changed = "no";
+                        }
+                    }
+
+                    const qty = Number(quantityField.value) || 0;
+                    const price = Number(priceField.value) || 0;
+
+                    subtotalCell.textContent = money(qty * price);
+                }
+
+                productSelect.addEventListener("change", () => {
+                    productSelect.dataset.changed = "yes";
+                    updateEditPreview();
+                });
+
+                quantityField.addEventListener("input", updateEditPreview);
+                priceField.addEventListener("input", updateEditPreview);
+
+                // Edit actions
+                const actionCell = document.createElement("td");
+                const actions = document.createElement("div");
+                actions.className = "action-buttons";
+
+                const saveChangesButton = document.createElement("button");
+                saveChangesButton.type = "button";
+                saveChangesButton.className = "btn-primary";
+                saveChangesButton.textContent = "Save Changes";
+                saveChangesButton.addEventListener("click", () => {
+                    saveCartItemEdit(index);
+                });
+
+                const cancelButton = document.createElement("button");
+                cancelButton.type = "button";
+                cancelButton.className = "btn-secondary";
+                cancelButton.textContent = "Cancel";
+                cancelButton.addEventListener("click", cancelCartItemEdit);
+
+                actions.append(saveChangesButton, cancelButton);
+                actionCell.appendChild(actions);
+                row.appendChild(actionCell);
+            } else {
+                [
+                    item.name,
+                    item.category || "-",
+                    item.quantity + " " + item.stockUnit,
+                    money(item.price),
+                    money(item.price * item.quantity)
+                ].forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+
+                const actionCell = document.createElement("td");
+                const actions = document.createElement("div");
+                actions.className = "action-buttons";
+
+                const editButton = document.createElement("button");
+                editButton.type = "button";
+                editButton.className = "btn-edit";
+                editButton.textContent = "Edit";
+                editButton.addEventListener("click", () => {
+                    editCartItem(index);
+                });
+
+                const removeButton = document.createElement("button");
+                removeButton.type = "button";
+                removeButton.className = "btn-danger";
+                removeButton.textContent = "Remove";
+                removeButton.addEventListener("click", () => {
+                    removeCartItem(index);
+                });
+
+                actions.append(editButton, removeButton);
+                actionCell.appendChild(actions);
+                row.appendChild(actionCell);
+            }
+
+            cartBody.appendChild(row);
+        });
+
+        cartEmpty.style.display = cart.length ? "none" : "block";
+
+        const total = cart.reduce((sum, item) =>
+            sum + item.price * item.quantity, 0
+        );
+
+        cartTotal.textContent = money(total);
+        saveButton.disabled = cart.length === 0 || editingIndex !== null;
+    }
+
+    function clearCurrentPurchase() {
+        if (cart.length === 0) {
+            hideNotice();
+            return;
+        }
+
+        if (!confirm("Clear all medicines from the current purchase?")) {
+            return;
+        }
+
+        cart = [];
+        editingIndex = null;
+        renderCart();
+        hideNotice();
+    }
+
+    function createTransactionId() {
+        return "purchase-" + Date.now() + "-" +
+            Math.random().toString(36).slice(2, 9);
+    }
+
+    function savePurchase() {
+        hideNotice();
+
+        if (editingIndex !== null) {
+            showNotice(
+                "Please save or cancel your current edit before saving the purchase.",
+                "error"
+            );
+            return;
+        }
+
+        if (cart.length === 0) {
+            showNotice("Please add at least one medicine before saving.", "error");
+            return;
+        }
+
+        const confirmed = confirm(
+            "Are you sure you want to save this purchase to Purchase History?"
+        );
+
+        if (!confirmed) return;
+
+        const medicines = getMedicines();
+        const updatedCart = [];
+
+        for (const item of cart) {
+            const medicine = medicines.find(m =>
+                String(m.id) === String(item.medicineId)
+            );
+
+            if (!medicine) {
+                showNotice(
+                    item.name + " could not be found in Manage Medicine.",
+                    "error"
+                );
+                refreshMedicineOptions();
+                return;
+            }
+
+            const stock = Number(medicine.stock);
+
+            if (
+                !Number.isInteger(item.quantity) ||
+                item.quantity < 1 ||
+                !Number.isFinite(stock) ||
+                item.quantity > stock
+            ) {
+                showNotice(
+                    "Insufficient stock for " + item.name +
+                    ". Please check the available stock.",
+                    "error"
+                );
+                refreshMedicineOptions();
+                return;
+            }
+
+            if (!Number.isFinite(item.price) || item.price < 0) {
+                showNotice("Invalid price for " + item.name + ".", "error");
+                return;
+            }
+
+            updatedCart.push({
+                medicineId: medicine.id,
+                name: item.name,
+                category: item.category || "",
+                form: item.form || "",
+                stockUnit: item.stockUnit || getUnit(medicine),
+                price: item.price,
+                quantity: item.quantity,
+                subtotal: item.price * item.quantity
+            });
+        }
+
+        const purchases = getPurchases();
+
+        const transaction = {
+            id: createTransactionId(),
+            date: new Date().toISOString(),
+            items: updatedCart,
+            total: updatedCart.reduce((sum, item) =>
+                sum + item.price * item.quantity, 0
+            )
+        };
+
+        // Deduct stock only after the final confirmation.
+        updatedCart.forEach(item => {
+            const medicine = medicines.find(m =>
+                String(m.id) === String(item.medicineId)
+            );
+            medicine.stock = Number(medicine.stock) - item.quantity;
+        });
+
+        const previousMedicines = localStorage.getItem(MEDICINES_KEY);
+        const previousPurchases = localStorage.getItem(PURCHASES_KEY);
+
+        try {
+            purchases.unshift(transaction);
+
+            localStorage.setItem(MEDICINES_KEY, JSON.stringify(medicines));
+            localStorage.setItem(PURCHASES_KEY, JSON.stringify(purchases));
+        } catch (error) {
+            try {
+                if (previousMedicines === null) {
+                    localStorage.removeItem(MEDICINES_KEY);
+                } else {
+                    localStorage.setItem(MEDICINES_KEY, previousMedicines);
+                }
+
+                if (previousPurchases === null) {
+                    localStorage.removeItem(PURCHASES_KEY);
+                } else {
+                    localStorage.setItem(PURCHASES_KEY, previousPurchases);
+                }
+            } catch (restoreError) {
+                console.error("Unable to restore saved data.", restoreError);
+            }
+
+            showNotice(
+                "Unable to save the purchase. Please check browser storage and try again.",
+                "error"
+            );
+            return;
+        }
+
+        cart = [];
+        editingIndex = null;
+
+        renderCart();
+        refreshMedicineOptions();
+        renderHistory();
+
+        quantityInput.value = "";
+        subtotalInput.value = money(0);
+
+        showNotice(
+            "Purchase saved successfully! Purchase History and stock have been updated.",
+            "success"
+        );
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+
+        if (Number.isNaN(date.getTime())) {
+            return "Date unavailable";
+        }
+
+        return date.toLocaleString("en-PH", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit"
+        });
+    }
+
+    function renderHistory() {
+        const historyList = document.getElementById("historyList");
+        const filterDate = document.getElementById("historyDate").value;
+
+        historyList.innerHTML = "";
+
+        let purchases = getPurchases();
+
+if (!filterDate) {
+    purchases = [];
+} else {
+    purchases = purchases.filter(purchase => {
+        if (!purchase.date) return false;
+
+        const date = new Date(purchase.date);
+        if (Number.isNaN(date.getTime())) return false;
+
+        const localDate =
+            date.getFullYear() + "-" +
+            String(date.getMonth() + 1).padStart(2, "0") + "-" +
+            String(date.getDate()).padStart(2, "0");
+
+        return localDate === filterDate;
+    });
+}
+
+        if (purchases.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "empty-state";
+            empty.textContent = filterDate
+                ? "No purchases found for this date."
+                : "No purchases have been saved yet.";
+
+            historyList.appendChild(empty);
+            return;
+        }
+
+        purchases.forEach((purchase, index) => {
+            const card = document.createElement("article");
+            card.className = "history-card";
+
+            const header = document.createElement("div");
+            header.className = "history-header";
+
+            const headingGroup = document.createElement("div");
+            const heading = document.createElement("h3");
+            heading.textContent = "Purchase " + (purchases.length - index);
+
+            const date = document.createElement("div");
+            date.className = "history-date";
+            date.textContent = formatDate(purchase.date);
+
+            headingGroup.append(heading, date);
+            header.appendChild(headingGroup);
+
+            const body = document.createElement("div");
+            body.className = "history-body";
+
+            const tableWrap = document.createElement("div");
+            tableWrap.className = "table-wrap";
+
+            const table = document.createElement("table");
+            const thead = document.createElement("thead");
+            const headerRow = document.createElement("tr");
+
+            ["Medicine", "Category", "Quantity", "Price Each", "Subtotal"]
+                .forEach(label => {
+                    const th = document.createElement("th");
+                    th.textContent = label;
+                    headerRow.appendChild(th);
+                });
+
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            const tbody = document.createElement("tbody");
+            const items = Array.isArray(purchase.items) ? purchase.items : [];
+
+            items.forEach(item => {
+                const row = document.createElement("tr");
+
+                [
+                    item.name || "Unknown medicine",
+                    item.category || "-",
+                    item.quantity + " " + (item.stockUnit || "Pieces"),
+                    money(Number(item.price) || 0),
+                    money((Number(item.price) || 0) *
+                          (Number(item.quantity) || 0))
+                ].forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+
+                tbody.appendChild(row);
+            });
+
+            table.append(tbody);
+            tableWrap.appendChild(table);
+            body.appendChild(tableWrap);
+
+            const totalRow = document.createElement("div");
+            totalRow.className = "history-total";
+
+            const totalLabel = document.createElement("strong");
+            totalLabel.textContent = "Transaction Total";
+
+            const totalValue = document.createElement("strong");
+            const calculatedTotal = items.reduce((sum, item) =>
+                sum + (Number(item.price) || 0) *
+                      (Number(item.quantity) || 0), 0
+            );
+
+            totalValue.textContent = money(
+                Number.isFinite(Number(purchase.total))
+                    ? Number(purchase.total)
+                    : calculatedTotal
+            );
+
+            totalRow.append(totalLabel, totalValue);
+            body.appendChild(totalRow);
+
+            card.append(header, body);
+            historyList.appendChild(card);
+        });
+    }
+
+    medicineSelect.addEventListener("change", updateMedicineDetails);
+    quantityInput.addEventListener("input", updateSubtotal);
+
+    document.getElementById("addButton").addEventListener("click", addToCart);
+    saveButton.addEventListener("click", savePurchase);
+
+    document.getElementById("clearButton").addEventListener(
+        "click", clearCurrentPurchase
+    );
+
+    document.getElementById("historyDate").addEventListener(
+        "change", renderHistory
+    );
+
+    refreshMedicineOptions();
+    renderCart();
+    renderHistory();
+</script>
+
+</body>
+</html>

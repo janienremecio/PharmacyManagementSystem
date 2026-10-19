@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaTrack - Total Sales</title>
+
+    <style>
+        :root {
+            --primary: #006D5B;
+            --green: #10B981;
+            --mint: #E6F7F3;
+            --background: #F9FCFB;
+            --text: #1F2937;
+            --muted: #6B7280;
+            --border: #E2E8F0;
+            --white: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        /* UPDATED HEADER */
+        .topbar {
+            background: var(--primary);
+            color: var(--white);
+            min-height: 56px;
+            padding: 16px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand {
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .back-link {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            width: 92%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        .page-heading p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(31, 41, 55, 0.04);
+        }
+
+        .panel h2 {
+            margin: 0 0 20px;
+            font-size: 20px;
+        }
+
+        .filter-row {
+            display: flex;
+            align-items: end;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            font: inherit;
+            background: white;
+            color: var(--text);
+        }
+
+        button {
+            padding: 12px 17px;
+            border: none;
+            border-radius: 7px;
+            background: var(--primary);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #005447;
+        }
+
+        .summary-card {
+            background: var(--mint);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .summary-label {
+            color: var(--primary);
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .summary-amount {
+            color: var(--primary);
+            font-size: 36px;
+            font-weight: bold;
+            margin: 12px 0;
+            overflow-wrap: anywhere;
+        }
+
+        .summary-note {
+            color: var(--primary);
+            font-size: 13px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 580px;
+        }
+
+        th,
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #F3F8F6;
+        }
+
+        .empty-state {
+            padding: 30px 15px;
+            text-align: center;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+        }
+
+        @media (max-width: 700px) {
+            .topbar {
+                flex-wrap: wrap;
+            }
+
+            .brand {
+                font-size: 20px;
+            }
+
+            .back-link {
+                font-size: 13px;
+            }
+
+            main {
+                width: 94%;
+                margin: 22px auto;
+            }
+
+            .page-heading h1 {
+                font-size: 24px;
+            }
+
+            .panel {
+                padding: 17px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-amount {
+                font-size: 30px;
+            }
+
+            .filter-row input,
+            .filter-row button {
+                width: 100%;
+            }
+
+            .form-group {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- UPDATED HEADER -->
+    <header class="topbar">
+        <div class="brand">PharmaTrack</div>
+        <a class="back-link" href="dashboard.html">
+            ← Back to Dashboard
+        </a>
+    </header>
+
+    <main>
+
+        <div class="page-heading">
+            <h1>Total Sales</h1>
+            <p>View the total amount earned from customer purchases.</p>
+        </div>
+
+        <section class="panel">
+            <h2>Daily Sales Summary</h2>
+
+            <div class="filter-row">
+                <div class="form-group">
+                    <label for="salesDate">Select Date</label>
+                    <input type="date" id="salesDate">
+                </div>
+
+                <button type="button" id="todayButton">
+                    View Today's Sales
+                </button>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-label" id="summaryLabel">
+                    Total Sales Today
+                </div>
+
+                <div class="summary-amount" id="totalSales">
+                    ₱0.00
+                </div>
+
+                <div class="summary-note">
+                    Based on saved customer purchase transactions.
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">
+                        Completed Transactions
+                    </div>
+                    <div class="stat-value" id="transactionCount">
+                        0
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">
+                        Total Quantity Sold
+                    </div>
+                    <div class="stat-value" id="quantitySold">
+                        0
+                    </div>
+                    <p class="muted">
+                        Combined quantity across the stock units sold.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="section-heading">
+                <h2>Sales Breakdown</h2>
+            </div>
+
+            <p class="muted">
+                Shows the quantity sold and total sales amount for each
+                medicine on the selected date.
+            </p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medicine</th>
+                            <th>Quantity Sold</th>
+                            <th>Price Each</th>
+                            <th>Total Sales</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="salesBody"></tbody>
+                </table>
+            </div>
+
+            <div id="salesEmpty" class="empty-state">
+                No sales recorded for this date.
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const PURCHASES_KEY = "pharmaTrackPurchases";
+
+        const salesDate = document.getElementById("salesDate");
+        const totalSales = document.getElementById("totalSales");
+        const transactionCount =
+            document.getElementById("transactionCount");
+        const quantitySold = document.getElementById("quantitySold");
+        const salesBody = document.getElementById("salesBody");
+        const salesEmpty = document.getElementById("salesEmpty");
+        const summaryLabel = document.getElementById("summaryLabel");
+
+        function money(amount) {
+            return Number(amount).toLocaleString("en-PH", {
+                style: "currency",
+                currency: "PHP",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function getLocalDateString(date = new Date()) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+
+            return `${year}-${month}-${day}`;
+        }
+
+        function getPurchases() {
+            try {
+                const purchases = JSON.parse(
+                    localStorage.getItem(PURCHASES_KEY) || "[]"
+                );
+
+                return Array.isArray(purchases) ? purchases : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function getPurchaseDate(purchase) {
+            if (!purchase.date) {
+                return "";
+            }
+
+            const date = new Date(purchase.date);
+
+            if (Number.isNaN(date.getTime())) {
+                return "";
+            }
+
+            return getLocalDateString(date);
+        }
+
+        function getItems(purchase) {
+            return Array.isArray(purchase.items)
+                ? purchase.items
+                : [];
+        }
+
+        function getItemSubtotal(item) {
+            const price = Number(item.price);
+            const quantity = Number(item.quantity);
+
+            if (
+                !Number.isFinite(price) ||
+                !Number.isFinite(quantity) ||
+                price < 0 ||
+                quantity < 0
+            ) {
+                return 0;
+            }
+
+            return price * quantity;
+        }
+
+        function getPurchaseTotal(purchase) {
+            return getItems(purchase).reduce((sum, item) => {
+                return sum + getItemSubtotal(item);
+            }, 0);
+        }
+
+        function renderSales() {
+            const selectedDate = salesDate.value;
+            const purchases = getPurchases();
+
+            const dailyPurchases = purchases.filter(purchase => {
+                return getPurchaseDate(purchase) === selectedDate;
+            });
+
+            const dailyTotal = dailyPurchases.reduce((sum, purchase) => {
+                return sum + getPurchaseTotal(purchase);
+            }, 0);
+
+            const totalQuantity = dailyPurchases.reduce((sum, purchase) => {
+                return sum + getItems(purchase).reduce((itemSum, item) => {
+                    const quantity = Number(item.quantity);
+
+                    return itemSum +
+                        (Number.isFinite(quantity) && quantity > 0
+                            ? quantity
+                            : 0);
+                }, 0);
+            }, 0);
+
+            totalSales.textContent = money(dailyTotal);
+            transactionCount.textContent = dailyPurchases.length;
+            quantitySold.textContent = totalQuantity;
+
+            const today = getLocalDateString();
+
+            summaryLabel.textContent = selectedDate === today
+                ? "Total Sales Today"
+                : "Total Sales on " + new Date(
+                    selectedDate + "T12:00:00"
+                ).toLocaleDateString("en-PH", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                });
+
+            renderBreakdown(dailyPurchases);
+        }
+
+        function renderBreakdown(purchases) {
+            salesBody.innerHTML = "";
+
+            const medicines = new Map();
+
+            purchases.forEach(purchase => {
+                getItems(purchase).forEach(item => {
+                    const name = item.name || "Unknown medicine";
+                    const unit = item.stockUnit || "Pieces";
+                    const key = name + "||" + unit;
+                    const quantity = Number(item.quantity) || 0;
+                    const price = Number(item.price) || 0;
+
+                    if (!medicines.has(key)) {
+                        medicines.set(key, {
+                            name,
+                            unit,
+                            quantity: 0,
+                            total: 0,
+                            priceTotal: 0,
+                            priceQuantity: 0
+                        });
+                    }
+
+                    const medicine = medicines.get(key);
+
+                    medicine.quantity += quantity;
+                    medicine.total += getItemSubtotal(item);
+                    medicine.priceTotal += price * quantity;
+                    medicine.priceQuantity += quantity;
+                });
+            });
+
+            if (medicines.size === 0) {
+                salesEmpty.style.display = "block";
+                return;
+            }
+
+            salesEmpty.style.display = "none";
+
+            medicines.forEach(medicine => {
+                const row = document.createElement("tr");
+
+                const averagePrice = medicine.priceQuantity > 0
+                    ? medicine.priceTotal / medicine.priceQuantity
+                    : 0;
+
+                const values = [
+                    medicine.name,
+                    medicine.quantity + " " + medicine.unit,
+                    money(averagePrice),
+                    money(medicine.total)
+                ];
+
+                values.forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+
+                salesBody.appendChild(row);
+            });
+        }
+
+        document.getElementById("todayButton").addEventListener(
+            "click",
+            () => {
+                salesDate.value = getLocalDateString();
+                renderSales();
+            }
+        );
+
+        salesDate.addEventListener("change", renderSales);
+
+        salesDate.value = getLocalDateString();
+        renderSales();
+
+        window.addEventListener("storage", event => {
+            if (event.key === PURCHASES_KEY) {
+                renderSales();
+            }
+        });
+    </script>
+
+</body>
+</html>
